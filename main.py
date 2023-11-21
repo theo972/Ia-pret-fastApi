@@ -1,15 +1,9 @@
 import pickle
-from typing import Dict
-
-import numpy as np
 from fastapi import FastAPI, HTTPException
 import pandas as pd
 from pydantic import BaseModel
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 app = FastAPI()
 
