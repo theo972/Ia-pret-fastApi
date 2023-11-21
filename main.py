@@ -1,8 +1,10 @@
 import pickle
 from typing import Dict
 
-from fastapi import FastAPI
+import numpy as np
+from fastapi import FastAPI, HTTPException
 import pandas as pd
+from pydantic import BaseModel
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
@@ -10,6 +12,17 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 app = FastAPI()
+
+class InputData(BaseModel):
+    installment: float
+    log_annual_inc: float
+    dti: float
+    fico: int
+    revol_bal: int
+    revol_util: float
+    inq_last_6mths: int
+    delinq_2yrs: int
+    pub_rec: int
 
 data = pd.read_csv('loan_data.csv')
 X_train, X_test, y_train, y_test = train_test_split(
@@ -46,8 +59,23 @@ async def load_model_and_predict(name: str):
 async def create_model(name: str):
     with open(f"{name}.pkl", 'rb') as file:
         loaded_model = pickle.load(file)
-    predictions = loaded_model.predict(X_train[:100])
-    # print("Accuracy:", accuracy_score(y_test, predictions))
-    # print("\nClassification Report:\n", classification_report(y_test, predictions))
-    # print("\nConfusion Matrix:\n", confusion_matrix(y_test, predictions))
+    loaded_model.predict(X_train[:100])
     return ({"Accuracy:" f"{loaded_model.score(X_train, y_train)}"})
+
+@app.post("/model/predict/array/{name}")
+async def predict_model(name: str, input_data: InputData):
+    try:
+        with open(f"{name}.pkl", 'rb') as file:
+            loaded_model = pickle.load(file)
+
+        input_values = [
+            input_data.installment, input_data.log_annual_inc, input_data.dti,
+            input_data.fico, input_data.revol_bal, input_data.revol_util,
+            input_data.inq_last_6mths, input_data.delinq_2yrs, input_data.pub_rec
+        ]
+        prediction = loaded_model.predict([input_values])[0]
+
+        return {"prediction": bool(prediction)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur lors de la prédiction : {str(e)}")
+

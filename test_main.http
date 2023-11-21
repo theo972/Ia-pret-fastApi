@@ -9,15 +9,30 @@ GET http://127.0.0.1:8000/hello/User
 Accept: application/json
 
 ###
-GET http://127.0.0.1:8000/model/create/model1
+GET http://127.0.0.1:8000/model/create/toto
 Accept: application/json
 
 ###
-GET http://127.0.0.1:8000/model/fit/model1
+GET http://127.0.0.1:8000/model/fit/toto
 Accept: application/json
 
 ###
-GET http://127.0.0.1:8000/model/predict/model1
+GET http://127.0.0.1:8000/model/predict/toto
 Accept: application/json
 
+###
+POST http://127.0.0.1:8000/model/predict/array/model1
+Accept: application/json
+Content-Type: application/json
 
+{
+  "installment": 829.10,
+  "log_annual_inc": 11.350407,
+  "dti": 19.48,
+  "fico": 737,
+  "revol_bal": 28854,
+  "revol_util": 52.1,
+  "inq_last_6mths": 0,
+  "delinq_2yrs": 0,
+  "pub_rec": 0
+}
