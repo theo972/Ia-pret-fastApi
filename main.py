@@ -51,7 +51,7 @@ async def load_model_and_predict(name: str):
     return {"fit model:" f"{name}"}
 
 @app.get("/model/predict/all/{name}")
-async def create_model(name: str):
+async def predict_all_model(name: str):
     with open(f"{name}.pkl", 'rb') as file:
         loaded_model = pickle.load(file)
     loaded_model.predict(X_train[:100])
