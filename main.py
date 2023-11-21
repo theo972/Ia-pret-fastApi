@@ -12,10 +12,10 @@ import matplotlib.pyplot as plt
 app = FastAPI()
 
 data = pd.read_csv('loan_data.csv')
-data = pd.get_dummies(data, columns=['purpose'], drop_first=True)
-X = data.drop('not.fully.paid', axis=1)
-y = data['not.fully.paid']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    data[["installment", "log.annual.inc", "dti", "fico", "revol.bal", "revol.util", "inq.last.6mths", "delinq.2yrs", "pub.rec"]],
+    data["not.fully.paid"], test_size=0.2,
+    random_state=42)
 
 @app.get("/")
 async def root():
@@ -28,7 +28,7 @@ async def say_hello(name: str):
 
 @app.get("/model/create/{name}")
 async def create_model(name: str):
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model = RandomForestClassifier(n_estimators=25, random_state=42, max_features=3)
     with open(f"{name}.pkl", 'wb') as file:
         pickle.dump(model, file)
     return ({"create model:" f"{name}"})

@@ -8,7 +8,7 @@ Accept: application/json
 GET http://127.0.0.1:8000/hello/User
 Accept: application/json
 
-### si vous voulez utiliser cette route penser a commenter load/model1 dans ce fichier
+###
 GET http://127.0.0.1:8000/model/create/model1
 Accept: application/json
 
