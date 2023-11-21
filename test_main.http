@@ -13,5 +13,11 @@ GET http://127.0.0.1:8000/model/create/model1
 Accept: application/json
 
 ###
-GET http://127.0.0.1:8000/model/load/model1
+GET http://127.0.0.1:8000/model/fit/model1
 Accept: application/json
+
+###
+GET http://127.0.0.1:8000/model/predict/model1
+Accept: application/json
+
+
