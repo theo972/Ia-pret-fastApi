@@ -17,11 +17,11 @@ GET http://127.0.0.1:8000/model/fit/toto
 Accept: application/json
 
 ###
-GET http://127.0.0.1:8000/model/predict/toto
+GET http://127.0.0.1:8000/model/predict/all/toto
 Accept: application/json
 
 ###
-POST http://127.0.0.1:8000/model/predict/array/model1
+POST http://127.0.0.1:8000/model/predict/model1
 Accept: application/json
 Content-Type: application/json
 

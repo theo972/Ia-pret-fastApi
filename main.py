@@ -2,6 +2,7 @@ import pickle
 from fastapi import FastAPI, HTTPException
 import pandas as pd
 from pydantic import BaseModel
+from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
@@ -49,14 +50,14 @@ async def load_model_and_predict(name: str):
         pickle.dump(loaded_model, file)
     return {"fit model:" f"{name}"}
 
-@app.get("/model/predict/{name}")
+@app.get("/model/predict/all/{name}")
 async def create_model(name: str):
     with open(f"{name}.pkl", 'rb') as file:
         loaded_model = pickle.load(file)
     loaded_model.predict(X_train[:100])
     return ({"Accuracy:" f"{loaded_model.score(X_train, y_train)}"})
 
-@app.post("/model/predict/array/{name}")
+@app.post("/model/predict/{name}")
 async def predict_model(name: str, input_data: InputData):
     try:
         with open(f"{name}.pkl", 'rb') as file:
