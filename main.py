@@ -49,24 +49,24 @@ async def create_model(model_type: ModelType):
     if model_type == ModelType.logisticregression:
         model = LogisticRegression(random_state=42)
 
-    model_filename = f"{model_type}.pkl"
+    model_filename = f"{model_type.value}.pkl"
     with open(model_filename, 'wb') as file:
         pickle.dump(model, file)
 
-    return {"created_model": model_type}
+    return {"created_model": model_type.value}
 
 @app.get("/model/fit/{model_type}")
 async def load_model_and_predict(model_type: ModelType):
-    with open(f"{model_type}.pkl", 'rb') as file:
+    with open(f"{model_type.value}.pkl", 'rb') as file:
         loaded_model = pickle.load(file)
     loaded_model.fit(X_train, y_train)
-    with open(f"{model_type}.pkl", 'wb') as file:
+    with open(f"{model_type.value}.pkl", 'wb') as file:
         pickle.dump(loaded_model, file)
-    return {"fit model:" f"{model_type}"}
+    return {"fit model:" f"{model_type.value}"}
 
 @app.get("/model/predict/all/{model_type}")
 async def predict_all_model(model_type: ModelType):
-    with open(f"{model_type}.pkl", 'rb') as file:
+    with open(f"{model_type.value}.pkl", 'rb') as file:
         loaded_model = pickle.load(file)
     loaded_model.predict(X_train[:100])
     return ({"Accuracy:" f"{loaded_model.score(X_train, y_train)}"})
@@ -74,7 +74,7 @@ async def predict_all_model(model_type: ModelType):
 @app.post("/model/predict/{model_type}")
 async def predict_model(model_type: ModelType, input_data: InputData):
     try:
-        with open(f"{model_type}.pkl", 'rb') as file:
+        with open(f"{model_type.value}.pkl", 'rb') as file:
             loaded_model = pickle.load(file)
 
         input_values = [
