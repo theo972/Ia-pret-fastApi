@@ -9,19 +9,19 @@ GET http://127.0.0.1:8000/hello/User
 Accept: application/json
 
 ###
-GET http://127.0.0.1:8000/model/create/toto
+GET http://127.0.0.1:8000/model/create/randomforest
 Accept: application/json
 
 ###
-GET http://127.0.0.1:8000/model/fit/toto
+GET http://127.0.0.1:8000/model/fit/randomforest
 Accept: application/json
 
 ###
-GET http://127.0.0.1:8000/model/predict/all/toto
+GET http://127.0.0.1:8000/model/predict/all/randomforest
 Accept: application/json
 
 ###
-POST http://127.0.0.1:8000/model/predict/model1
+POST http://127.0.0.1:8000/model/predict/randomforest
 Accept: application/json
 Content-Type: application/json
 

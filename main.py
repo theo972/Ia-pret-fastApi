@@ -1,12 +1,17 @@
 import pickle
+from enum import Enum
+
 from fastapi import FastAPI, HTTPException
 import pandas as pd
 from pydantic import BaseModel
-from sklearn.metrics import f1_score
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
 app = FastAPI()
+class ModelType(str, Enum):
+    randomforest = "randomforest"
+    logisticregression = "logisticregression"
 
 class InputData(BaseModel):
     installment: float
@@ -34,33 +39,42 @@ async def root():
 async def say_hello(name: str):
     return (({"message": f"Hello {name}"}))
 
-@app.get("/model/create/{name}")
-async def create_model(name: str):
-    model = RandomForestClassifier(n_estimators=25, random_state=42, max_features=3)
-    with open(f"{name}.pkl", 'wb') as file:
-        pickle.dump(model, file)
-    return ({"create model:" f"{name}"})
 
-@app.get("/model/fit/{name}")
-async def load_model_and_predict(name: str):
-    with open(f"{name}.pkl", 'rb') as file:
+
+@app.get("/model/create/{model_type}")
+async def create_model(model_type: ModelType):
+    if model_type == ModelType.randomforest:
+        model = RandomForestClassifier(n_estimators=25, random_state=42, max_features=3)
+
+    if model_type == ModelType.logisticregression:
+        model = LogisticRegression(random_state=42)
+
+    model_filename = f"{model_type}.pkl"
+    with open(model_filename, 'wb') as file:
+        pickle.dump(model, file)
+
+    return {"created_model": model_type}
+
+@app.get("/model/fit/{model_type}")
+async def load_model_and_predict(model_type: ModelType):
+    with open(f"{model_type}.pkl", 'rb') as file:
         loaded_model = pickle.load(file)
     loaded_model.fit(X_train, y_train)
-    with open(f"{name}.pkl", 'wb') as file:
+    with open(f"{model_type}.pkl", 'wb') as file:
         pickle.dump(loaded_model, file)
-    return {"fit model:" f"{name}"}
+    return {"fit model:" f"{model_type}"}
 
-@app.get("/model/predict/all/{name}")
-async def predict_all_model(name: str):
-    with open(f"{name}.pkl", 'rb') as file:
+@app.get("/model/predict/all/{model_type}")
+async def predict_all_model(model_type: ModelType):
+    with open(f"{model_type}.pkl", 'rb') as file:
         loaded_model = pickle.load(file)
     loaded_model.predict(X_train[:100])
     return ({"Accuracy:" f"{loaded_model.score(X_train, y_train)}"})
 
-@app.post("/model/predict/{name}")
-async def predict_model(name: str, input_data: InputData):
+@app.post("/model/predict/{model_type}")
+async def predict_model(model_type: ModelType, input_data: InputData):
     try:
-        with open(f"{name}.pkl", 'rb') as file:
+        with open(f"{model_type}.pkl", 'rb') as file:
             loaded_model = pickle.load(file)
 
         input_values = [
