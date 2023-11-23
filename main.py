@@ -9,10 +9,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
 app = FastAPI()
+
+# Liste des modèles
 class ModelType(str, Enum):
     randomforest = "randomforest"
     logisticregression = "logisticregression"
 
+" format des colonnes (eq formdata)"
 class InputData(BaseModel):
     installment: float
     log_annual_inc: float
@@ -24,6 +27,7 @@ class InputData(BaseModel):
     delinq_2yrs: int
     pub_rec: int
 
+# Entrainement de la data, retirer les colonnes et demande à se baser sur not.fully.paid
 data = pd.read_csv('loan_data.csv')
 X_train, X_test, y_train, y_test = train_test_split(
     data[["installment", "log.annual.inc", "dti", "fico", "revol.bal", "revol.util", "inq.last.6mths", "delinq.2yrs", "pub.rec"]],
@@ -40,7 +44,7 @@ async def say_hello(name: str):
     return (({"message": f"Hello {name}"}))
 
 
-
+# creation
 @app.get("/model/create/{model_type}")
 async def create_model(model_type: ModelType):
     if model_type == ModelType.randomforest:
@@ -55,6 +59,7 @@ async def create_model(model_type: ModelType):
 
     return {"created_model": model_type.value}
 
+# entrainement
 @app.get("/model/fit/{model_type}")
 async def load_model_and_predict(model_type: ModelType):
     with open(f"{model_type.value}.pkl", 'rb') as file:
@@ -64,13 +69,15 @@ async def load_model_and_predict(model_type: ModelType):
         pickle.dump(loaded_model, file)
     return {"fit model:" f"{model_type.value}"}
 
+# Predict d'entrainement
 @app.get("/model/predict/all/{model_type}")
 async def predict_all_model(model_type: ModelType):
     with open(f"{model_type.value}.pkl", 'rb') as file:
-        loaded_model = pickle.load(file)
+        loaded_model = pickle.load(file) # load model
     loaded_model.predict(X_train[:100])
-    return ({"Accuracy:" f"{loaded_model.score(X_train, y_train)}"})
+    return ({"Accuracy:" f"{loaded_model.score(X_train, y_train)}"}) # save model
 
+# predict du user
 @app.post("/model/predict/{model_type}")
 async def predict_model(model_type: ModelType, input_data: InputData):
     try:
