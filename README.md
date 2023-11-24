@@ -5,6 +5,16 @@ Loans
 L'objectif est de déterminer le taux de personnes susceptibles de rembourser le prêt.
 Pour se faire nous avons utilisé les données fournies par https://www.kaggle.com/datasets/itssuru/loan-data/data.
 
+Tout d'abord il est important de notifier qu'on ne peut pas se fier totalement à notre jeux de
+donnée car on ne sait pas comment, par qui et avec quelle attention elles ont été collectées.
+
+Même si notre modèle est correctement entrainé et remonte une performance de prédiction de 99%,
+l'inconnue sur la récupération des données ne nous permet pas d'utiliser notre modèle pour des
+prédictions réelles car les données d'entrainements peuvent être fausses.
+
+Une donnée sur le % de prêt précédement remboursé par un emprunteur aurait été une donnée très
+utile pour entrainer notre modèle. Cependant cette donnée ne figure pas dans le jeux de donnée.
+
 Colonnes:
 
 * <u>not.fully.paid</u> (**OBJECTIF**, bool): Indique si le prêt a été remboursé ou non.
