@@ -2,9 +2,9 @@ FROM nikolaik/python-nodejs:latest
 
 WORKDIR /FASTAPI
 
-COPY ./la-pret-fastApi/loan_data.csv .
-COPY ./la-pret-fastApi/main.py .
-COPY ./la-pret-fastApi/requirements.txt .
+COPY ./loan_data.csv .
+COPY ./main.py .
+COPY ./requirements.txt .
 
 RUN pip install -r ./requirements.txt
 
