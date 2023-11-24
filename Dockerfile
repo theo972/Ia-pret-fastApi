@@ -1,4 +1,4 @@
-FROM nikolaik/python-nodejs:python3.11-nodejs21
+FROM nikolaik/python-nodejs:python3.9-nodejs20
 
 WORKDIR /FASTAPI
 
